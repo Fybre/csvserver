@@ -5,7 +5,20 @@ from fastapi.staticfiles import StaticFiles
 import csv, json, os, uuid, glob
 from pathlib import Path
 
-app = FastAPI()
+description = """
+
+"""
+
+app = FastAPI(
+        title="CSV REST Server API", 
+        description="A simple REST API server to upload CSV files and access their data as JSON.",
+        version="1.0.0",
+        license_info={
+            "name": "Apache 2.0",
+            "identifier": "MIT",
+        }
+)
+
 
 BASE_DIR = os.path.dirname(__file__)
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -98,12 +111,12 @@ def delete_file(filename: str):
     }
 
 
-@app.get("/uploadpage", response_class=HTMLResponse)
+@app.get("/uploadpage", response_class=HTMLResponse, include_in_schema=False)
 def upload_page(request: Request):
     return templates.TemplateResponse("upload.html", {"request": request})
 
 
-@app.get("/listpage", response_class=HTMLResponse)
+@app.get("/listpage", response_class=HTMLResponse, include_in_schema=False)
 def list_page(request: Request):
     files = list_csv_files()
     return templates.TemplateResponse("list.html", {"request": request, "files": files})
@@ -123,6 +136,6 @@ async def get_csv_data(filename: str):
     return JSONResponse(content=rows)
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def home(request: Request):
     return upload_page(request)
