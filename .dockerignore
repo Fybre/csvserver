@@ -1,0 +1,32 @@
+# Python cache and environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.env
+.venv/
+env/
+venv/
+
+# IDE and tooling
+.vscode/
+.idea/
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker artifacts
+*.log
+*.tmp
+
+# Exclude CSV data and generated metadata files
+app/data/*
+!app/data/.gitkeep
