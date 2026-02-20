@@ -1,0 +1,9 @@
+services:
+  csvserver:
+    build: .
+    container_name: csvserver
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app/data:/app/app/data
+    restart: unless-stopped

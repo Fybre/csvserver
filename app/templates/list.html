@@ -17,6 +17,7 @@
                         <tr>
                             <th>Stored Filename</th>
                             <th>Original Filename</th>
+                            <th>Auth</th>
                             <th>Endpoint</th>
                             <th>Action</th>
                         </tr>
@@ -26,6 +27,13 @@
                         <tr id="row-{{ file.endpoint }}">
                             <td>{{ file.stored_filename }}</td>
                             <td>{{ file.original_filename }}</td>
+                            <td>
+                                {% if file.auth_key %}
+                                <span class="badge bg-warning text-dark">Required</span>
+                                {% else %}
+                                <span class="badge bg-secondary">None</span>
+                                {% endif %}
+                            </td>
                             <td><a href="{{ file.endpoint }}" target="_blank">{{ file.endpoint }}</a></td>
                             <td>
                                 <button class="btn btn-danger btn-sm"

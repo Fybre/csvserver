@@ -46,7 +46,8 @@ def list_csv_files():
 @app.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),
-    filename: str | None = Form(None)
+    filename: str | None = Form(None),
+    auth_key: str | None = Form(None)
 ):
     # If filename is specified, overwrite
     if filename:
@@ -65,7 +66,8 @@ async def upload_file(
     meta = {
         "original_filename": file.filename,
         "stored_filename": f"{assigned_filename}.csv",
-        "endpoint": assigned_filename
+        "endpoint": assigned_filename,
+        "auth_key": auth_key if auth_key and auth_key.strip() else None
     }
     with open(meta_path, "w") as f:
         json.dump(meta, f, indent=2)
@@ -123,12 +125,23 @@ def list_page(request: Request):
 
 
 @app.get("/{filename}")
-async def get_csv_data(filename: str):
+async def get_csv_data(filename: str, request: Request):
     """Return JSON array from a CSV file."""
     csv_path = os.path.join(DATA_DIR, f"{filename}.csv")
+    meta_path = os.path.join(DATA_DIR, f"{filename}.json")
 
     if not os.path.exists(csv_path):
         raise HTTPException(status_code=404, detail=f"CSV file '{filename}' not found")
+
+    # Check for auth_key in metadata
+    if os.path.exists(meta_path):
+        with open(meta_path) as f:
+            meta = json.load(f)
+            required_key = meta.get("auth_key")
+            if required_key:
+                provided_key = request.headers.get("X-Auth-Key")
+                if provided_key != required_key:
+                    raise HTTPException(status_code=401, detail="Unauthorized: Invalid or missing X-Auth-Key header")
 
     with open(csv_path, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
