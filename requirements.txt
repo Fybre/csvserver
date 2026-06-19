@@ -1,4 +1,4 @@
-fastapi
+fastapi<0.108.0
 uvicorn
 python-multipart
 jinja2
